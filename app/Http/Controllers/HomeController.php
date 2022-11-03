@@ -26,20 +26,6 @@ class HomeController extends Controller
         return view('home');
     }
 
-    public function proteksi_1()
-    {
-        echo "Halaman Proteksi 1";
-    }
-
-    public function proteksi_1_admin()
-    {
-        echo "Halaman Proteksi 1 - Admin";
-    }
-
-    public function proteksi_1_staff()
-    {
-        echo "Halaman Proteksi 1 - Staff";
-    }
 
     public function about()
     {
