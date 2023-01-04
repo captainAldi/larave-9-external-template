@@ -21,29 +21,6 @@ Auth::routes(['verify' => true]);
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-Route::get('/proteksi-1', [App\Http\Controllers\HomeController::class, 'proteksi_1'])->name('proteksi.1')->middleware('auth');
-
-
-//Prefix untuk /admin
-Route::prefix('admin')->group(function () {
-
-    // Middleware Check
-    Route::middleware(['auth', 'verified', 'user.role:admin'])->group(function () {
-        Route::get('/proteksi-1', [App\Http\Controllers\HomeController::class, 'proteksi_1_admin'])->name('admin.proteksi.1');
-    });
-
-});
-
-//Prefix untuk /staff
-Route::prefix('staff')->group(function () {
-
-    // Middleware Check
-    Route::middleware(['auth', 'verified', 'user.role:staff'])->group(function () {
-        Route::get('/proteksi-1', [App\Http\Controllers\HomeController::class, 'proteksi_1_staff'])->name('staff.proteksi.1');
-    });
-
-});
-
 
 //Prefix untuk /master
 Route::prefix('master')->group(function () {
