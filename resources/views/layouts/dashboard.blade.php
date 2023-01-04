@@ -80,11 +80,12 @@
           Lainnya
       </div>
 
-      <!-- Nav Item - Charts -->
+      <!-- Nav Item - About -->
       <li class="nav-item {{ (request()->is('about')) ? 'active' : '' }}">
         <a class="nav-link" href="{{ route('about') }}">
           <i class="fas fa-fw fa-info"></i>
-          <span>About</span></a>
+          <span>About</span>
+        </a>
       </li>
 
       <!-- Divider -->
@@ -121,11 +122,15 @@
                 <span class="mr-2 d-none d-lg-inline text-gray-600 small">
                   {{ Auth::user()->name }}
                 </span>
-                <img class="img-profile rounded-circle" src="{{ asset('sb-admin-2/img/undraw_profile.svg') }}">
+                @if(!empty(Auth::user()->profile_picture))
+                  <img class="img-profile rounded-circle" src="{{ url('/files/profile-picture/' . auth()->user()->profile_picture) }}">
+                @else
+                  <img class="img-profile rounded-circle" src="{{ asset('sb-admin-2/img/undraw_profile.svg') }}">
+                @endif
               </a>
               <!-- Dropdown - User Information -->
               <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
-                <a class="dropdown-item" href="#">
+                <a class="dropdown-item" href="{{ route('profile.home', auth()->user()->id) }}">
                   <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                   Profile
                 </a>

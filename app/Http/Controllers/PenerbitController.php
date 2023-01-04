@@ -65,6 +65,10 @@ class PenerbitController extends Controller
     {
         $detail_penerbit = Penerbit::findOrFail($id);
 
+        if ($detail_penerbit->buku()->exists()) {
+            return back()->with('status', 'Tidak dapat hapus data ber-relasi !');
+        }
+        
         $detail_penerbit->delete();
 
         return back()->with('status', 'Data Berhasil di Hapus !');

@@ -74,9 +74,16 @@ Route::prefix('master')->group(function () {
 
 });
 
-// No Prefix
+// No Prefix and Middleware Auth & Verified
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/about', [App\Http\Controllers\HomeController::class, 'about'])->name('about');
+
+    // Profile
+    Route::get('/my-profile/{id}', [App\Http\Controllers\ProfileController::class, 'create'])->name('profile.home');
+    Route::patch('/my-profile/{id}', [App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update');
+
+    // Get Files
+    Route::get('/files/profile-picture/{namaFile}', [App\Http\Controllers\FilesController::class, 'showProfilePicture']);
 });
 
 

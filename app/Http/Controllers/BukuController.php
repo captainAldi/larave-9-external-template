@@ -3,17 +3,76 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Database\Eloquent\Builder;
 
 use App\Models\Buku;
 use App\Models\Penerbit;
 
 class BukuController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $data_buku = Buku::with('penerbit')->get();
 
-        return view('buku.index', compact('data_buku'));
+        // Variable Pencarian
+        $cari_judul = $request->cari_judul;
+        $cari_nama_penerbit = $request->cari_nama_penerbit;
+
+        $tipe_sort = 'desc';
+        $var_sort = 'created_at';
+
+        // Prepare Model
+        $data_buku = Buku::query();
+
+        // Kondisi Pencarian
+        if ($request->filled('cari_judul')) {
+            $data_buku = $data_buku->where('judul', 'LIKE', '%' . $cari_judul . '%');
+        }
+
+        if ($request->filled('cari_nama_penerbit')) {
+            $data_buku = $data_buku->whereHas('penerbit', function (Builder $query) use ($cari_nama_penerbit) {
+                $query->where('nama', 'LIKE', '%' . $cari_nama_penerbit . '%');
+            });
+        }
+
+        // Kondisi Sorting
+        if( $request->has('tipe_sort') || $request->has('var_sort') ) {
+            $tipe_sort = $request->tipe_sort;
+            $var_sort = $request->var_sort;
+
+            $data_buku = $data_buku->orderBy($var_sort, $tipe_sort);
+        }
+
+        // Kondisi Paginate
+
+        $set_pagination = $request->set_pagination;
+
+        if ($request->filled('set_pagination')) {
+            $data_buku = $data_buku
+                        ->orderBy($var_sort, $tipe_sort)
+                        ->paginate($set_pagination);
+        } else {
+            $data_buku = $data_buku
+                        ->orderBy($var_sort, $tipe_sort)
+                        ->paginate(5);
+        }
+
+        // Append Query String to Pagination
+        $data_buku = $data_buku->withQueryString();
+
+
+        // Return View dengan Data
+        return view('buku.index', compact(
+            'data_buku',
+            'cari_judul',
+            'cari_nama_penerbit',
+        
+            'tipe_sort',
+            'var_sort',
+
+            'set_pagination'
+        ));
+
+        
     }
 
     public function tambah()
